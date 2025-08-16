@@ -1,6 +1,7 @@
 @echo off
 setlocal
 
+:menu
 echo ========================================
 echo        FERRAMENTA PARA USO TECNICO
 echo                 SYSCARE
@@ -25,3 +26,5 @@ if %opcao% equ 1 (
 )
 
 pause
+cls
+goto :menu
