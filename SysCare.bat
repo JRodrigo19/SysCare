@@ -11,6 +11,8 @@ echo ========================================
 echo.
 echo [1] Verificacao de arquivos do windows (SFC)
 echo [2] Limpeza de arquivos temporarios
+echo [3] Reparo de imagem do Windows (DISM)
+
 echo [0] Exit
 
 echo.
@@ -48,6 +50,15 @@ if "%opcao%"=="2" (
     echo Arquivos apagados: !apagados!
     echo Concluido.
 )
+
+if "%opcao%"=="3" (
+    echo Iniciando reparo de imagem do Windows com DISM...
+    DISM /Online /Cleanup-Image /RestoreHealth
+    echo.
+    echo Reparo de imagem concluido.
+)
+
+
 
 pause
 cls
