@@ -13,12 +13,16 @@ echo [1] Verificacao de arquivos do windows (SFC)
 echo [2] Limpeza de arquivos temporarios
 echo [3] Reparo de imagem do Windows (DISM)
 echo [4] Limpeza de disco (cleanmgr)
-
 echo [0] Exit
 
 echo.
 set /p opcao=ESCOLHA UMA OPCAO: 
 echo.
+
+if not exist %opcao% (
+    echo Selecione uma opcao valida
+    goto :fim
+)
 
 if %opcao% equ 0 (
     exit
@@ -67,6 +71,7 @@ if "%opcao%"=="4" (
 )
 
 
+:fim
 pause
 cls
 goto :menu
