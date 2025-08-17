@@ -12,6 +12,7 @@ echo.
 echo [1] Verificacao de arquivos do windows (SFC)
 echo [2] Limpeza de arquivos temporarios
 echo [3] Reparo de imagem do Windows (DISM)
+echo [4] Limpeza de disco (cleanmgr)
 
 echo [0] Exit
 
@@ -58,6 +59,12 @@ if "%opcao%"=="3" (
     echo Reparo de imagem concluido.
 )
 
+if "%opcao%"=="4" (
+    echo Abrindo utilitario de limpeza de disco...
+    cleanmgr
+    echo.
+    echo Limpeza de disco finalizada.
+)
 
 
 pause
