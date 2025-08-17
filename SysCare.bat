@@ -13,14 +13,18 @@ echo [1] Verificacao de arquivos do windows (SFC)
 echo [2] Limpeza de arquivos temporarios
 echo [3] Reparo de imagem do Windows (DISM)
 echo [4] Limpeza de disco (cleanmgr)
+echo [5] Checagem de disco (chkdsk)
 echo [0] Exit
+
+set "validas=0 1 2 3 4 5"
 
 echo.
 set /p opcao=ESCOLHA UMA OPCAO: 
 echo.
 
-if not exist %opcao% (
-    echo Selecione uma opcao valida
+echo !validas! | findstr /c:"%opcao%" >nul
+if errorlevel 1 (
+    echo Opcao invalida!
     goto :fim
 )
 
@@ -31,6 +35,8 @@ if %opcao% equ 0 (
 if %opcao% equ 1 (
     echo AGUARDE...
     sfc /scannow
+    echo.
+    echo Verificacao concluida
 )
 
 if "%opcao%"=="2" (
@@ -66,6 +72,13 @@ if "%opcao%"=="3" (
 if "%opcao%"=="4" (
     echo Abrindo utilitario de limpeza de disco...
     cleanmgr
+    echo.
+    echo Limpeza de disco finalizada.
+)
+
+if %opcao% equ 5 (
+    echo Abrindo Checagem de disco
+    CHKDSK /f /r /x /i
     echo.
     echo Limpeza de disco finalizada.
 )
