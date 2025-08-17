@@ -16,7 +16,7 @@ echo [4] Limpeza de disco (cleanmgr)
 echo [5] Checagem de disco (chkdsk)
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5"
+set "validas=0 1 2 3 4 5 "
 
 echo.
 set /p opcao=ESCOLHA UMA OPCAO: 
