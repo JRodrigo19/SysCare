@@ -18,9 +18,10 @@ echo [5] Checagem de disco (chkdsk)
 echo [6] Ping Google
 echo [7] Resetar configurações de rede
 echo [8] Gerenciador de dispositivos
+echo [9] Atualizar políticas de grupo
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5 6 7 8 "
+set "validas=0 1 2 3 4 5 6 7 8 9 "
 
 echo.
 set /p opcao=ESCOLHA UMA OPÇÃO: 
@@ -124,6 +125,12 @@ if "%opcao%"=="8" (
     pause
 )
 
+if "%opcao%"=="9" (
+    echo Atualizando Políticas de Grupo (GPO)...
+    gpupdate /force
+    echo.
+    pause
+)
 
 
 :fim
