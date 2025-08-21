@@ -17,9 +17,10 @@ echo [4] Limpeza de disco (cleanmgr)
 echo [5] Checagem de disco (chkdsk)
 echo [6] Ping Google
 echo [7] Resetar configurações de rede
+echo [8] Gerenciador de dispositivos
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5 6 7 "
+set "validas=0 1 2 3 4 5 6 7 8 "
 
 echo.
 set /p opcao=ESCOLHA UMA OPÇÃO: 
@@ -114,6 +115,15 @@ if "%opcao%"=="7" (
     echo.
     pause
 )
+
+
+if "%opcao%"=="8" (
+    echo Abrindo Gerenciador de Dispositivos...
+    start "" devmgmt.msc
+    echo.
+    pause
+)
+
 
 
 :fim
