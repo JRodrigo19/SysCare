@@ -16,9 +16,12 @@ echo [3] Reparo de imagem do Windows (DISM)
 echo [4] Limpeza de disco (cleanmgr)
 echo [5] Checagem de disco (chkdsk)
 echo [6] Ping Google
+echo [7] Resetar configurações de rede
+echo [8] Gerenciador de dispositivos
+echo [9] Atualizar políticas de grupo
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5 6 "
+set "validas=0 1 2 3 4 5 6 7 8 9 "
 
 echo.
 set /p opcao=ESCOLHA UMA OPÇÃO: 
@@ -88,6 +91,45 @@ if %opcao% equ 5 (
 if %opcao% equ 6 (
     echo Aguarde...
     ping 8.8.8.8 -t
+)
+
+if "%opcao%"=="7" (
+    echo Resetando configurações de rede
+    echo.
+    echo Liberando IP atual...
+    ipconfig /release
+    echo.
+    echo Limpando cache DNS...
+    ipconfig /flushdns
+    echo.
+    echo Renovando IP...
+    ipconfig /renew
+    echo.
+    echo Resetando Winsock...
+    netsh winsock reset
+    echo.
+    echo Resetando TCP/IP...
+    netsh int ip reset
+    echo.
+    echo Reset de rede concluído.
+    echo Pode ser necessário reiniciar o computador.
+    echo.
+    pause
+)
+
+
+if "%opcao%"=="8" (
+    echo Abrindo Gerenciador de Dispositivos...
+    start "" devmgmt.msc
+    echo.
+    pause
+)
+
+if "%opcao%"=="9" (
+    echo Atualizando Políticas de Grupo (GPO)...
+    gpupdate /force
+    echo.
+    pause
 )
 
 
