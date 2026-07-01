@@ -1,5 +1,5 @@
 @echo off
-chcp 65001 >null
+chcp 65001 >nul
 setlocal EnableExtensions EnableDelayedExpansion
 
 :menu
@@ -33,11 +33,11 @@ if errorlevel 1 (
     goto :fim
 )
 
-if %opcao% equ 0 (
+if "%opcao%"=="0" (
     exit
 )
 
-if %opcao% equ 1 (
+if "%opcao%"== "1" (
     echo AGUARDE...
     sfc /scannow
     echo.
@@ -81,14 +81,47 @@ if "%opcao%"=="4" (
     echo Limpeza de disco finalizada.
 )
 
-if %opcao% equ 5 (
+if "%opcao%"=="5" (
     echo Abrindo Checagem de disco
-    CHKDSK /f /r /x /i
     echo.
-    echo Limpeza de disco finalizada.
+    :checagem_disco
+    set /p drive=Digite a letra do disco que deseja verificar ^(ex: C^): 
+    set drive=!drive::=!
+    echo.
+    if exist !drive!:\ (
+	echo Disco encontrado.
+	echo.
+	:escolha_limpeza
+	echo [1] Somente Leitura
+	echo [2] Limpeza Rapida
+        echo [3] Limpeza Detalhada
+	set /p limpeza=Selecione o tipo da limpeza: 
+	echo.
+	if "!limpeza!"=="1" (
+		CHKDSK !drive!:	
+	)
+	if "!limpeza!"=="2" (
+		CHKDSK !drive!: /i
+        )
+	if "!limpeza!"=="3" (
+		CHKDSK !drive!: /r
+	) else (
+		echo Opçao invalida!
+    		goto :escolha_limpeza
+	)
+	echo.
+	echo Checagem finalizada.
+	goto :fim
+
+    ) else (
+	echo O disco !drive! não foi encontrado. Tente novamente.
+	echo.
+	goto :checagem_disco
+    )
+   
 )
 
-if %opcao% equ 6 (
+if "%opcao%"=="6" (
     echo Aguarde...
     ping 8.8.8.8 -t
 )
