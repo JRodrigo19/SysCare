@@ -81,6 +81,44 @@ if "%opcao%"=="4" (
     echo Limpeza de disco finalizada.
 )
 
+if "%opcao%"=="2" (
+    echo Apagando arquivos temporários... Aguarde.
+    echo.
+
+    set /a apagados=0
+
+    for /r "%TEMP%" %%F in (*) do (
+        del /f /q "%%F" >nul 2>&1
+        if not exist "%%F" set /a apagados+=1
+    )
+    for /d %%D in ("%TEMP%\*") do rd /s /q "%%D" >nul 2>&1
+
+    for /r "C:\Windows\Temp" %%F in (*) do (
+        del /f /q "%%F" >nul 2>&1
+        if not exist "%%F" set /a apagados+=1
+    )
+    for /d %%D in ("C:\Windows\Temp\*") do rd /s /q "%%D" >nul 2>&1
+
+    echo.
+    echo Arquivos apagados: !apagados!
+    echo Concluido.
+    goto: fim
+)
+
+if "%opcao%"=="3" (
+    echo Iniciando reparo de imagem do Windows com DISM...
+    DISM /Online /Cleanup-Image /RestoreHealth
+    echo.
+    echo Reparo de imagem concluido.
+)
+
+if "%opcao%"=="4" (
+    echo Abrindo utilitário de limpeza de disco...
+    cleanmgr
+    echo.
+    echo Limpeza de disco finalizada.
+)
+
 if "%opcao%"=="5" (
     echo Abrindo Checagem de disco
     echo.
