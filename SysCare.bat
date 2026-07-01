@@ -17,7 +17,7 @@ echo [4] Limpeza de disco (cleanmgr)
 echo [5] Checagem de disco (chkdsk)
 echo [6] Ping Google
 echo [7] Resetar configurações de rede
-echo [8] Gerenciador de dispositivos
+echo [8] Resetar Spooler de Impressão
 echo [9] Atualizar políticas de grupo
 echo [0] Exit
 
@@ -42,6 +42,7 @@ if "%opcao%"== "1" (
     sfc /scannow
     echo.
     echo Verificação concluida
+    goto :fim
 )
 
 if "%opcao%"=="2" (
@@ -65,6 +66,7 @@ if "%opcao%"=="2" (
     echo.
     echo Arquivos apagados: !apagados!
     echo Concluido.
+    goto :fim
 )
 
 if "%opcao%"=="3" (
@@ -72,6 +74,7 @@ if "%opcao%"=="3" (
     DISM /Online /Cleanup-Image /RestoreHealth
     echo.
     echo Reparo de imagem concluido.
+    goto :fim
 )
 
 if "%opcao%"=="4" (
@@ -79,44 +82,7 @@ if "%opcao%"=="4" (
     cleanmgr
     echo.
     echo Limpeza de disco finalizada.
-)
-
-if "%opcao%"=="2" (
-    echo Apagando arquivos temporários... Aguarde.
-    echo.
-
-    set /a apagados=0
-
-    for /r "%TEMP%" %%F in (*) do (
-        del /f /q "%%F" >nul 2>&1
-        if not exist "%%F" set /a apagados+=1
-    )
-    for /d %%D in ("%TEMP%\*") do rd /s /q "%%D" >nul 2>&1
-
-    for /r "C:\Windows\Temp" %%F in (*) do (
-        del /f /q "%%F" >nul 2>&1
-        if not exist "%%F" set /a apagados+=1
-    )
-    for /d %%D in ("C:\Windows\Temp\*") do rd /s /q "%%D" >nul 2>&1
-
-    echo.
-    echo Arquivos apagados: !apagados!
-    echo Concluido.
-    goto: fim
-)
-
-if "%opcao%"=="3" (
-    echo Iniciando reparo de imagem do Windows com DISM...
-    DISM /Online /Cleanup-Image /RestoreHealth
-    echo.
-    echo Reparo de imagem concluido.
-)
-
-if "%opcao%"=="4" (
-    echo Abrindo utilitário de limpeza de disco...
-    cleanmgr
-    echo.
-    echo Limpeza de disco finalizada.
+    goto :fim
 )
 
 if "%opcao%"=="5" (
@@ -162,6 +128,7 @@ if "%opcao%"=="5" (
 if "%opcao%"=="6" (
     echo Aguarde...
     ping 8.8.8.8 -t
+    goto :fim
 )
 
 if "%opcao%"=="7" (
@@ -186,14 +153,18 @@ if "%opcao%"=="7" (
     echo Pode ser necessário reiniciar o computador.
     echo.
     pause
+    goto :fim
 )
 
 
 if "%opcao%"=="8" (
-    echo Abrindo Gerenciador de Dispositivos...
-    start "" devmgmt.msc
+    echo ok
     echo.
+    net stop spooler
+    del /Q /F /S "%systemroot%\System32\Spool\Printers\*.*"
+    net start spooler
     pause
+    goto :fim
 )
 
 if "%opcao%"=="9" (
@@ -201,6 +172,7 @@ if "%opcao%"=="9" (
     gpupdate /force
     echo.
     pause
+    goto :fim
 )
 
 
