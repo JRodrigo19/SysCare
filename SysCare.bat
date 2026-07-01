@@ -1,47 +1,51 @@
 @echo off
+chcp 65001 >nul
 setlocal EnableExtensions EnableDelayedExpansion
 
 :menu
 echo ========================================
-echo        FERRAMENTA PARA USO TECNICO
+echo        FERRAMENTA PARA USO TÉCNICO
 echo                 SYSCARE
 echo        EXECUTE COMO ADMINISTRADOR!
 echo ========================================
 
 echo.
-echo [1] Verificacao de arquivos do windows (SFC)
-echo [2] Limpeza de arquivos temporarios
+echo [1] Verificação de arquivos do windows (SFC)
+echo [2] Limpeza de arquivos temporários
 echo [3] Reparo de imagem do Windows (DISM)
 echo [4] Limpeza de disco (cleanmgr)
 echo [5] Checagem de disco (chkdsk)
 echo [6] Ping Google
+echo [7] Resetar configurações de rede
+echo [8] Gerenciador de dispositivos
+echo [9] Atualizar políticas de grupo
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5 6 "
+set "validas=0 1 2 3 4 5 6 7 8 9 "
 
 echo.
-set /p opcao=ESCOLHA UMA OPCAO: 
+set /p opcao=ESCOLHA UMA OPÇÃO: 
 echo.
 
 echo !validas! | findstr /c:"%opcao%" >nul
 if errorlevel 1 (
-    echo Opcao invalida!
+    echo Opção inválida!
     goto :fim
 )
 
-if %opcao% equ 0 (
+if "%opcao%"=="0" (
     exit
 )
 
-if %opcao% equ 1 (
+if "%opcao%"== "1" (
     echo AGUARDE...
     sfc /scannow
     echo.
-    echo Verificacao concluida
+    echo Verificação concluida
 )
 
 if "%opcao%"=="2" (
-    echo Apagando arquivos temporarios... Aguarde.
+    echo Apagando arquivos temporários... Aguarde.
     echo.
 
     set /a apagados=0
@@ -71,23 +75,94 @@ if "%opcao%"=="3" (
 )
 
 if "%opcao%"=="4" (
-    echo Abrindo utilitario de limpeza de disco...
+    echo Abrindo utilitário de limpeza de disco...
     cleanmgr
     echo.
     echo Limpeza de disco finalizada.
 )
 
-if %opcao% equ 5 (
+if "%opcao%"=="5" (
     echo Abrindo Checagem de disco
-    CHKDSK /f /r /x /i
     echo.
-    echo Limpeza de disco finalizada.
+    :checagem_disco
+    set /p drive=Digite a letra do disco que deseja verificar ^(ex: C^): 
+    set drive=!drive::=!
+    echo.
+    if exist !drive!:\ (
+	echo Disco encontrado.
+	echo.
+	:escolha_limpeza
+	echo [1] Somente Leitura
+	echo [2] Limpeza Rapida
+        echo [3] Limpeza Detalhada
+	set /p limpeza=Selecione o tipo da limpeza: 
+	echo.
+	if "!limpeza!"=="1" (
+		CHKDSK !drive!:	
+	)
+	if "!limpeza!"=="2" (
+		CHKDSK !drive!: /i
+        )
+	if "!limpeza!"=="3" (
+		CHKDSK !drive!: /r
+	) else (
+		echo Opçao invalida!
+    		goto :escolha_limpeza
+	)
+	echo.
+	echo Checagem finalizada.
+	goto :fim
+
+    ) else (
+	echo O disco !drive! não foi encontrado. Tente novamente.
+	echo.
+	goto :checagem_disco
+    )
+   
 )
 
-if %opcao% equ 6 (
+if "%opcao%"=="6" (
     echo Aguarde...
     ping 8.8.8.8 -t
-    n
+)
+
+if "%opcao%"=="7" (
+    echo Resetando configurações de rede
+    echo.
+    echo Liberando IP atual...
+    ipconfig /release
+    echo.
+    echo Limpando cache DNS...
+    ipconfig /flushdns
+    echo.
+    echo Renovando IP...
+    ipconfig /renew
+    echo.
+    echo Resetando Winsock...
+    netsh winsock reset
+    echo.
+    echo Resetando TCP/IP...
+    netsh int ip reset
+    echo.
+    echo Reset de rede concluído.
+    echo Pode ser necessário reiniciar o computador.
+    echo.
+    pause
+)
+
+
+if "%opcao%"=="8" (
+    echo Abrindo Gerenciador de Dispositivos...
+    start "" devmgmt.msc
+    echo.
+    pause
+)
+
+if "%opcao%"=="9" (
+    echo Atualizando Políticas de Grupo (GPO)...
+    gpupdate /force
+    echo.
+    pause
 )
 
 
