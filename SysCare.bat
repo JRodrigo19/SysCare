@@ -19,11 +19,14 @@ echo [6] Ping Google
 echo [7] Resetar configurações de rede
 echo [8] Resetar Spooler de Impressão
 echo [9] Atualizar políticas de grupo
+echo [10] Mass Grave
+echo [11] Systeminfo
 echo [0] Exit
 
-set "validas=0 1 2 3 4 5 6 7 8 9 "
+set "validas=0 1 2 3 4 5 6 7 8 9 10 11 20"
 
 echo.
+set "opcao=20"
 set /p opcao=ESCOLHA UMA OPÇÃO: 
 echo.
 
@@ -33,11 +36,17 @@ if errorlevel 1 (
     goto :fim
 )
 
+if "%opcao%"=="20" (
+    echo Número não definido!
+    pause
+    goto :fim
+)
+
 if "%opcao%"=="0" (
     exit
 )
 
-if "%opcao%"== "1" (
+if "%opcao%"=="1" (
     echo AGUARDE...
     sfc /scannow
     echo.
@@ -86,43 +95,8 @@ if "%opcao%"=="4" (
 )
 
 if "%opcao%"=="5" (
-    echo Abrindo Checagem de disco
-    echo.
-    :checagem_disco
-    set /p drive=Digite a letra do disco que deseja verificar ^(ex: C^): 
-    set drive=!drive::=!
-    echo.
-    if exist !drive!:\ (
-	echo Disco encontrado.
-	echo.
-	:escolha_limpeza
-	echo [1] Somente Leitura
-	echo [2] Limpeza Rapida
-        echo [3] Limpeza Detalhada
-	set /p limpeza=Selecione o tipo da limpeza: 
-	echo.
-	if "!limpeza!"=="1" (
-		CHKDSK !drive!:	
-	)
-	if "!limpeza!"=="2" (
-		CHKDSK !drive!: /i
-        )
-	if "!limpeza!"=="3" (
-		CHKDSK !drive!: /r
-	) else (
-		echo Opçao invalida!
-    		goto :escolha_limpeza
-	)
-	echo.
-	echo Checagem finalizada.
-	goto :fim
-
-    ) else (
-	echo O disco !drive! não foi encontrado. Tente novamente.
-	echo.
-	goto :checagem_disco
-    )
-   
+    call :checagem_disco
+    goto :fim
 )
 
 if "%opcao%"=="6" (
@@ -156,7 +130,6 @@ if "%opcao%"=="7" (
     goto :fim
 )
 
-
 if "%opcao%"=="8" (
     echo ok
     echo.
@@ -168,15 +141,84 @@ if "%opcao%"=="8" (
 )
 
 if "%opcao%"=="9" (
-    echo Atualizando Políticas de Grupo (GPO)...
+    echo Atualizando Políticas de Grupo...
     gpupdate /force
     echo.
     pause
     goto :fim
 )
 
+if "%opcao%"=="10" (
+    echo Executando comando PowerShell...
+    echo.
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "irm https://get.activated.win | iex"
+    echo.
+    pause
+    goto :fim
+)
+
+if "%opcao%"=="11" (
+    echo Coletando informações do sistema...
+    echo.
+    Systeminfo
+    echo.
+    pause
+    goto :fim
+)
 
 :fim
 pause
 cls
 goto :menu
+
+:: ==========================================================
+:: Sub-rotinas (fora dos blocos com parênteses do menu principal)
+:: ==========================================================
+
+:checagem_disco
+echo Abrindo Checagem de disco
+echo.
+set /p drive=Digite a letra do disco que deseja verificar ^(ex: C^): 
+set "drive=!drive::=!"
+echo.
+if exist !drive!:\ goto :disco_encontrado
+echo O disco !drive! não foi encontrado. Tente novamente.
+echo.
+goto :checagem_disco
+
+:disco_encontrado
+echo Disco encontrado.
+echo.
+
+:escolha_limpeza
+echo [1] Somente Leitura
+echo [2] Limpeza Rapida
+echo [3] Limpeza Detalhada
+echo [0] Sair
+set /p limpeza=Selecione o tipo da limpeza: 
+echo.
+
+if "!limpeza!"=="1" goto :limpeza_leitura
+if "!limpeza!"=="2" goto :limpeza_rapida
+if "!limpeza!"=="3" goto :limpeza_detalhada
+if "!limpeza!"=="0" goto :eof
+
+echo Opçao invalida!
+goto :escolha_limpeza
+
+:limpeza_leitura
+CHKDSK !drive!:
+goto :checagem_fim
+
+:limpeza_rapida
+CHKDSK !drive!: /i
+goto :checagem_fim
+
+:limpeza_detalhada
+CHKDSK !drive!: /r
+goto :checagem_fim
+
+:checagem_fim
+echo.
+echo Checagem finalizada.
+goto :eof
